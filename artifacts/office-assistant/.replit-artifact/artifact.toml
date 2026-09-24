@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/office-assistant/"
+title = "Arogyasevak"
+description = "A mobile health-worker assistant for managing village health records, programme reports, monthly submissions, and field activity."
+version = "1.0.0"
+id = "artifacts/office-assistant"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/office-assistant/" ]
+localPort = 21653
+
+[services.development]
+run = "pnpm --filter @workspace/office-assistant run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/office-assistant", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/office-assistant", "run", "serve" ]
+
+[services.env]
+PORT = "21653"
+BASE_PATH = "/office-assistant/"

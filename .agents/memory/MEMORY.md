@@ -1,0 +1,2 @@
+- [Expo native tabs exports](expo-native-tabs.md) — use nested Trigger icon/label components with the installed Expo Router version.
+- [Expo PDF sharing](expo-pdf-sharing.md) — share expo-print's returned URI directly; extra cache copy/rename can fail on native devices.
