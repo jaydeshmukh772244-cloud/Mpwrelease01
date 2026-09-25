@@ -1805,7 +1805,7 @@ function buildEntomologicalReportHtml({ profile, entomologicalReports, monthLabe
         <th>दूषित असलेली<br>कंटेनर</th><th>रिकामी केलेली<br>कंटेनर</th><th>ऑव्हिट टाकलेली<br>घरे</th>
         <th>हाऊस<br>इंडेक्स</th><th>कंटेनर<br>इंडेक्स</th><th>ब्रेटो<br>इंडेक्स</th>
       </tr></thead><tbody>${rows || '<tr><td colspan="13">कोणतीही नोंद नाही</td></tr>'}</tbody>
-      <tfoot><tr class="total-row"><td colspan="2">Total</td><td>${sum('population')}</td><td>${sum('householdCount')}</td><td>${sum('larvaeInspectedHouses')}</td><td>${sum('larvaeInfestedHouses')}</td><td>${sum('containersInspected')}</td><td>${sum('containersInfested')}</td><td>${sum('containersEmptied')}</td><td>${sum('ovitrapHouses')}</td><td></td><td></td><td></td></tr></tfoot></table>
+      <tfoot><tr class="total-row"><td colspan="2">Total</td><td>${sum('population')}</td><td>${sum('householdCount')}</td><td>${sum('larvaeInspectedHouses')}</td><td>${sum('larvaeInfestedHouses')}</td><td>${sum('containersInspected')}</td><td>${sum('containersInfested')}</td><td>${sum('containersEmptied')}</td><td>${sum('ovitrapHouses')}</td><td>${sum('houseIndex')}</td><td>${sum('containerIndex')}</td><td>${sum('breteauIndex')}</td></tr></tfoot></table>
       <div class="signatures">
         <div>सविनय सादर<br>वैद्यकीय अधिकारी<br>प्राथमिक आरोग्य केंद्र: ${escapeHtml(profile.primaryHealthCenter || '—')}</div>
         <div class="right">नाव: ${escapeHtml(profile.name || '—')}<br>आरोग्य सेवक<br>उपकेंद्र: ${escapeHtml(profile.subCenter || '—')}</div>
