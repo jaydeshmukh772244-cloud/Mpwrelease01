@@ -24,7 +24,7 @@ const reportTitles: Record<ReportKey, string> = {
   cataractSurgery: 'मोतीबिंदू शस्त्रक्रिया अहवाल',
   sputum: 'थुकी नमुने अहवाल',
   leprosy: 'संशयीत कुष्ठरुग्ण अहवाल',
-  waterTcl: 'पाणी नमुने व ओ.टी. अहवाल',
+  waterTcl: 'पाणी नमुने व TCL साठा अहवाल',
   nationalReview: 'सहा राष्ट्रीय कार्यक्रमाचा आढावा',
   entomological: 'किटकशास्त्रीय अहवाल',
   bloodSampleMonthly: 'गावनिहाय रक्तनमुने मासिक अहवाल',
@@ -571,7 +571,7 @@ export default function ReportsScreen() {
       }
       await shareOrPrintPdfOnNative({
         html,
-        dialogTitle: 'पाणी नमुने व ओ.टी. अहवाल शेअर करा',
+        dialogTitle: 'पाणी नमुने व TCL साठा अहवाल शेअर करा',
         logLabel: 'Water and TCL',
       });
     } catch (error) {
@@ -961,7 +961,7 @@ export default function ReportsScreen() {
               <ReportMenuItem number="३" icon="check-circle" title="मोतीबिंदू शस्त्रक्रिया अहवाल" count={cataractSurgeryReports.length} onPress={() => setActiveReport('cataractSurgery')} colors={colors} />
               <ReportMenuItem number="४" icon="activity" title="थुकी नमुने अहवाल" count={sputumSampleReports.length} onPress={() => setActiveReport('sputum')} colors={colors} />
               <ReportMenuItem number="५" icon="heart" title="संशयीत कुष्ठरुग्ण अहवाल" count={leprosyReports.length} onPress={() => setActiveReport('leprosy')} colors={colors} />
-               <ReportMenuItem number="६" icon="droplet" title="पाणी नमुने व ओ.टी. अहवाल" count={waterTclReports.length} onPress={() => setActiveReport('waterTcl')} colors={colors} />
+               <ReportMenuItem number="६" icon="droplet" title="पाणी नमुने व TCL साठा अहवाल" count={waterTclReports.length} onPress={() => setActiveReport('waterTcl')} colors={colors} />
                <ReportMenuItem number="७" icon="grid" title="सहा राष्ट्रीय कार्यक्रमाचा आढावा" count={nationalProgramsReviewReports.length} onPress={() => setActiveReport('nationalReview')} colors={colors} />
                <View style={[styles.specialSection, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
                  <View style={[styles.specialSectionIcon, { backgroundColor: colors.card }]}>
@@ -1259,8 +1259,8 @@ export default function ReportsScreen() {
           {activeReport === 'waterTcl' ? <View style={styles.secondReportSection}>
             <View style={[styles.sectionBanner, { backgroundColor: colors.secondary }]}>
               <View style={[styles.sectionIcon, { backgroundColor: colors.card }]}><Feather name="droplet" size={18} color={colors.primary} /></View>
-              <View style={styles.sectionCopy}><Text style={[styles.sectionEyebrow, { color: colors.primary }]}>REPORT SECTION 6</Text><Text style={[styles.sectionTitle, { color: colors.foreground }]}>पाणी नमुने व ओ.टी. अहवाल</Text></View>
-              <Pressable testID="add-water-tcl-report" accessibilityRole="button" accessibilityLabel="नवीन पाणी नमुने व ओ.टी. नोंद जोडा" onPress={toggleWaterTclForm} style={({ pressed }) => [styles.sectionAddButton, { backgroundColor: colors.card, opacity: pressed ? 0.7 : 1 }]}><Feather name={showWaterTclForm ? 'x' : 'plus'} size={17} color={colors.primary} /></Pressable>
+               <View style={styles.sectionCopy}><Text style={[styles.sectionEyebrow, { color: colors.primary }]}>REPORT SECTION 6</Text><Text style={[styles.sectionTitle, { color: colors.foreground }]}>पाणी नमुने व TCL साठा अहवाल</Text></View>
+               <Pressable testID="add-water-tcl-report" accessibilityRole="button" accessibilityLabel="नवीन पाणी नमुने व TCL साठा नोंद जोडा" onPress={toggleWaterTclForm} style={({ pressed }) => [styles.sectionAddButton, { backgroundColor: colors.card, opacity: pressed ? 0.7 : 1 }]}><Feather name={showWaterTclForm ? 'x' : 'plus'} size={17} color={colors.primary} /></Pressable>
             </View>
             <View style={[styles.reportPaper, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={styles.paperTop}>
@@ -1272,7 +1272,7 @@ export default function ReportsScreen() {
                 <Text style={[styles.monthLabel, { color: colors.foreground }]}>{monthLabel}</Text>
               </View>
               <View style={[styles.reportTitleRule, { borderTopColor: colors.border }]} />
-              <Text style={[styles.reportTitle, { color: colors.foreground }]}>पाणी नमुने व ओ.टी. अहवाल</Text>
+              <Text style={[styles.reportTitle, { color: colors.foreground }]}>पाणी नमुने व TCL साठा अहवाल</Text>
               <Text style={[styles.reportSubtitle, { color: colors.mutedForeground }]}>{waterTclReports.length} गावांच्या नोंदी</Text>
             </View>
             {showWaterTclForm ? <View style={[styles.formCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -1306,7 +1306,7 @@ export default function ReportsScreen() {
               <WaterTclEntryCard key={entry.id} entry={entry} index={index} colors={colors} onEdit={() => editWaterTclReport(entry)} onRemove={() => Alert.alert('नोंद हटवायची?', `${entry.villageName} गावाची नोंद हटवायची आहे का?`, [{ text: 'रद्द करा', style: 'cancel' }, { text: 'हटवा', style: 'destructive', onPress: () => removeWaterTclReport(entry.id) }])} />
             )) : <View style={[styles.emptyCard, { backgroundColor: colors.card, borderColor: colors.border }]}><Feather name="droplet" size={24} color={colors.mutedForeground} /><Text style={[styles.emptyTitle, { color: colors.foreground }]}>अजून पाणी नमुना नोंद नाही</Text><Text style={[styles.emptyText, { color: colors.mutedForeground }]}>या sectionमधील + बटन दाबून गावाची नोंद जोडा.</Text></View>}
             {waterTclReports.length ? <View style={[styles.exportCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={styles.exportHeading}><View><Text style={[styles.exportTitle, { color: colors.foreground }]}>पाणी नमुने व ओ.टी. रिपोर्ट तयार आहे?</Text><Text style={[styles.exportText, { color: colors.mutedForeground }]}>नोंदी तपासल्यानंतर PDF शेअर करा.</Text></View><Feather name="file-text" size={20} color={colors.primary} /></View>
+              <View style={styles.exportHeading}><View><Text style={[styles.exportTitle, { color: colors.foreground }]}>पाणी नमुने व TCL साठा अहवाल तयार आहे?</Text><Text style={[styles.exportText, { color: colors.mutedForeground }]}>नोंदी तपासल्यानंतर PDF शेअर करा.</Text></View><Feather name="file-text" size={20} color={colors.primary} /></View>
               <Pressable testID="share-water-tcl-report-pdf" onPress={() => void exportWaterTclPdf()} style={({ pressed }) => [styles.exportButton, { backgroundColor: colors.primary, opacity: pressed ? 0.78 : 1 }]}><Feather name="share-2" size={15} color="#FFFFFF" /><Text style={styles.exportButtonText}>PDF शेअर करा</Text></Pressable>
             </View> : null}
             <View style={[styles.signatureArea, { backgroundColor: colors.secondary }]}>
@@ -1706,7 +1706,7 @@ function buildWaterTclReportHtml({ profile, waterTclReports, monthLabel }: { pro
     sumWaterValues(waterTclReports.map((entry) => entry.tclUnsuitable)),
   ];
   return `<!doctype html>
-    <html><head><meta charset="utf-8"><title>पाणी नमुने व ओ.टी. अहवाल - ${escapeHtml(monthLabel)}</title>
+    <html><head><meta charset="utf-8"><title>पाणी नमुने व TCL साठा अहवाल - ${escapeHtml(monthLabel)}</title>
     <style>
       @page { size: A4 landscape; margin: 12mm; }
       body { font-family: Arial, sans-serif; color: #172033; margin: 0; }
@@ -1733,7 +1733,7 @@ function buildWaterTclReportHtml({ profile, waterTclReports, monthLabel }: { pro
         </div>
         <div class="month">महिना: ${escapeHtml(monthLabel)}</div>
       </div>
-      <h1>पाणी नमुने व ओ.टी. अहवाल</h1>
+      <h1>पाणी नमुने व TCL साठा अहवाल</h1>
       <table>
         <thead>
           <tr>
