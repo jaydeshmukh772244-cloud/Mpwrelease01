@@ -807,7 +807,7 @@ export default function ReportsScreen() {
   };
 
   const exportEntomologicalSectionPdf = async () => {
-    const html = buildEntomologicalSectionHtml({ profile, entomologicalReports, bloodSlideReports, guppyFishReleasePlacesReports, monthLabel });
+    const html = buildEntomologicalSectionHtml({ profile, entomologicalReports, bloodSampleMonthlyReports, bloodSlideReports, guppyFishReleasePlacesReports, monthLabel });
     try {
       if (Platform.OS === 'web') {
         if (!printHtmlDocument(html)) Alert.alert('PDF तयार करता आला नाही', 'कृपया browser मध्ये print परवानगी द्या.');
@@ -980,7 +980,7 @@ export default function ReportsScreen() {
                  <View style={styles.specialSectionCopy}>
                    <Text style={[styles.specialSectionEyebrow, { color: colors.primary }]}>SPECIAL SECTION</Text>
                    <Text style={[styles.specialSectionTitle, { color: colors.foreground }]}>किटकशास्त्रीय अहवाल</Text>
-                     <Text style={[styles.specialSectionText, { color: colors.mutedForeground }]}>या विभागात ३ गावनिहाय reports आहेत</Text>
+                      <Text style={[styles.specialSectionText, { color: colors.mutedForeground }]}>या विभागात ४ गावनिहाय reports आहेत</Text>
                  </View>
                  <Pressable testID="share-entomological-section-pdf" accessibilityRole="button" accessibilityLabel="किटकशास्त्रीय अहवालांची एकत्रित PDF शेअर करा" onPress={() => void exportEntomologicalSectionPdf()} style={({ pressed }) => [styles.sectionAddButton, { backgroundColor: colors.card, opacity: pressed ? 0.7 : 1 }]}>
                    <Feather name="file-text" size={16} color={colors.primary} />
@@ -989,7 +989,8 @@ export default function ReportsScreen() {
                <View style={[styles.specialReportMenu, { borderColor: colors.border }]}>
                    <ReportMenuItem number="८" icon="file-text" title="Blood Slides Report" count={bloodSlideReports.length} onPress={() => setActiveReport('bloodSlide')} colors={colors} />
                   <ReportMenuItem number="९" icon="sunrise" title="किटकशास्त्रीय अहवाल" count={entomologicalReports.length} onPress={() => setActiveReport('entomological')} colors={colors} />
-                  <ReportMenuItem number="१०" icon="map-pin" title="गप्पी मासे सोडलेली ठिकाणे" count={guppyFishReleasePlacesReports.length} onPress={() => setActiveReport('guppyFishReleasePlaces')} colors={colors} last />
+                   <ReportMenuItem number="१०" icon="map-pin" title="गप्पी मासे सोडलेली ठिकाणे" count={guppyFishReleasePlacesReports.length} onPress={() => setActiveReport('guppyFishReleasePlaces')} colors={colors} />
+                   <ReportMenuItem number="११" icon="activity" title="गावनिहाय रक्तनमुने मासिक अहवाल" count={bloodSampleMonthlyReports.length} onPress={() => setActiveReport('bloodSampleMonthly')} colors={colors} last />
                </View>
             </View>
           </> : null}
@@ -2126,18 +2127,21 @@ function buildEntomologicalSectionFileName(monthLabel: string) {
 function buildEntomologicalSectionHtml({
   profile,
   entomologicalReports,
+  bloodSampleMonthlyReports,
   bloodSlideReports,
   guppyFishReleasePlacesReports,
   monthLabel,
 }: {
   profile: Profile;
   entomologicalReports: EntomologicalReportEntry[];
+  bloodSampleMonthlyReports: BloodSampleMonthlyReportEntry[];
   bloodSlideReports: BloodSlideReportEntry[];
   guppyFishReleasePlacesReports: GuppyFishReleasePlacesReportEntry[];
   monthLabel: string;
 }) {
   const pages = [
     buildEntomologicalReportHtml({ profile, entomologicalReports, monthLabel }),
+    buildBloodSampleMonthlyReportHtml({ profile, reports: bloodSampleMonthlyReports, monthLabel }),
     buildBloodSlideReportHtml({ profile, reports: bloodSlideReports, monthLabel }),
     buildGuppyFishReleasePlacesReportHtml({ profile, reports: guppyFishReleasePlacesReports, monthLabel }),
   ].map(bodyFromReportHtml).join('<div class="report-page-break"></div>');
