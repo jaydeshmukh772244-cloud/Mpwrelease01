@@ -308,6 +308,7 @@ export default function BloodSampleMonthlyReport() {
         html,
         dialogTitle: 'गावनिहाय रक्तनमुने मासिक अहवाल शेअर करा',
         logLabel: 'Blood sample monthly report',
+        fileName: 'गावनिहाय रक्तनमुने मासिक अहवाल.pdf',
       });
     } catch (error) {
       console.error('Blood sample monthly report PDF export failed', error);

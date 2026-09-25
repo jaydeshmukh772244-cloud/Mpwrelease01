@@ -242,7 +242,12 @@ export default function BloodSlideReport() {
         if (!printHtmlDocument(html)) Alert.alert('PDF तयार करता आला नाही', 'कृपया browser मध्ये print परवानगी द्या.');
         return;
       }
-      await shareOrPrintPdfOnNative({ html, dialogTitle: 'Blood Slides Report शेअर करा', logLabel: 'Blood slides report' });
+      await shareOrPrintPdfOnNative({
+        html,
+        dialogTitle: 'Blood Slides Report शेअर करा',
+        logLabel: 'Blood slides report',
+        fileName: 'Blood Slides Report.pdf',
+      });
     } catch (error) {
       console.error('Blood slide report PDF export failed', error);
       Alert.alert('PDF तयार करता आला नाही', 'कृपया पुन्हा प्रयत्न करा.');

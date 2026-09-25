@@ -486,6 +486,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'संशयीत कुष्ठरुग्ण अहवाल शेअर करा',
         logLabel: 'Leprosy',
+        fileName: 'संशयीत कुष्ठरुग्ण अहवाल.pdf',
       });
     } catch (error) {
       console.error('Leprosy PDF export failed', error);
@@ -573,6 +574,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'पाणी नमुने व TCL साठा अहवाल शेअर करा',
         logLabel: 'Water and TCL',
+        fileName: 'पाणी नमुने व TCL साठा अहवाल.pdf',
       });
     } catch (error) {
       console.error('Water and TCL PDF export failed', error);
@@ -696,6 +698,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'सहा राष्ट्रीय कार्यक्रमाचा आढावा शेअर करा',
         logLabel: 'National programs review',
+        fileName: 'सहा राष्ट्रीय कार्यक्रमाचा आढावा.pdf',
       });
     } catch (error) {
       console.error('National programs review PDF export failed', error);
@@ -795,6 +798,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'किटकशास्त्रीय अहवाल शेअर करा',
         logLabel: 'Entomological',
+        fileName: 'किटकशास्त्रीय अहवाल.pdf',
       });
     } catch (error) {
       console.error('Entomological report PDF export failed', error);
@@ -813,6 +817,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'किटकशास्त्रीय अहवाल एकत्रित PDF शेअर करा',
         logLabel: 'Entomological section',
+        fileName: 'एकत्रित रिपोर्ट.pdf',
       });
     } catch (error) {
       console.error('Entomological section PDF export failed', error);
@@ -841,6 +846,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'सहा राष्ट्रीय कार्यक्रमाचा आढावा PDF शेअर करा',
         logLabel: 'Combined reports',
+        fileName: 'एकत्रित रिपोर्ट.pdf',
       });
     } catch (error) {
       console.error('Combined reports PDF export failed', error);
@@ -859,6 +865,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: action === 'share' ? 'मृत्यू अहवाल शेअर करा' : 'मृत्यू अहवाल सेव्ह करा',
         logLabel: 'Death',
+        fileName: 'मृत्यू अहवाल.pdf',
       });
     } catch (error) {
       console.error('PDF export failed', error);
@@ -877,6 +884,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'संशयीत मोतीबिंदू अहवाल शेअर करा',
         logLabel: 'Cataract',
+        fileName: 'संशयीत मोतीबिंदू अहवाल.pdf',
       });
     } catch (error) {
       console.error('Cataract PDF export failed', error);
@@ -895,6 +903,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'मोतीबिंदू शस्त्रक्रिया अहवाल शेअर करा',
         logLabel: 'Cataract surgery',
+        fileName: 'मोतीबिंदू शस्त्रक्रिया अहवाल.pdf',
       });
     } catch (error) {
       console.error('Cataract surgery PDF export failed', error);
@@ -913,6 +922,7 @@ export default function ReportsScreen() {
         html,
         dialogTitle: 'थुकी नमुने अहवाल शेअर करा',
         logLabel: 'Sputum',
+        fileName: 'थुकी नमुने अहवाल.pdf',
       });
     } catch (error) {
       console.error('Sputum PDF export failed', error);
@@ -2106,13 +2116,11 @@ function bodyFromReportHtml(html: string) {
 }
 
 function buildCombinedReportsFileName(monthLabel: string) {
-  const safeMonthLabel = monthLabel.replace(/[\\/:*?"<>|]/g, '-').trim();
-  return `सहा राष्ट्रीय कार्यक्रमाचा आढावा - ${safeMonthLabel}.pdf`;
+  return 'एकत्रित रिपोर्ट.pdf';
 }
 
 function buildEntomologicalSectionFileName(monthLabel: string) {
-  const safeMonthLabel = monthLabel.replace(/[\\/:*?"<>|]/g, '-').trim();
-  return `किटकशास्त्रीय अहवाल - ${safeMonthLabel}.pdf`;
+  return 'एकत्रित रिपोर्ट.pdf';
 }
 
 function buildEntomologicalSectionHtml({

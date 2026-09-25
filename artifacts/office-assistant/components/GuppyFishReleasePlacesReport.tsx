@@ -229,6 +229,7 @@ export default function GuppyFishReleasePlacesReport() {
         html,
         dialogTitle: 'गप्पी मासे सोडलेली ठिकाणे PDF शेअर करा',
         logLabel: 'Guppy fish release places',
+        fileName: 'गप्पी मासे सोडलेली ठिकाणे.pdf',
       });
     } catch (error) {
       console.error('Guppy fish release places PDF export failed', error);

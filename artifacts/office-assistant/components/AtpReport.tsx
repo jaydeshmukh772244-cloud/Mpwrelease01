@@ -199,6 +199,7 @@ export default function AtpReport() {
         html,
         dialogTitle: 'आगाऊ फिरती कार्यक्रम (ATP) शेअर करा',
         logLabel: 'ATP report',
+        fileName: 'आगाऊ फिरती कार्यक्रम (ATP).pdf',
       });
     } catch (error) {
       console.error('ATP PDF export failed', error);
