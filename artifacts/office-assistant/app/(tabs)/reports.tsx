@@ -34,6 +34,25 @@ const reportTitles: Record<ReportKey, string> = {
 
 const reportKeyValues: ReportKey[] = ['death', 'cataract', 'cataractSurgery', 'sputum', 'leprosy', 'waterTcl', 'nationalReview', 'entomological', 'bloodSampleMonthly', 'bloodSlide', 'guppyFishReleasePlaces'];
 
+const parseEntomologicalNumber = (value: string) => {
+  const parsed = Number(value.replace(/[^0-9.-]/g, ''));
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const formatEntomologicalIndex = (numerator: number, denominator: number) =>
+  denominator > 0 ? ((numerator / denominator) * 100).toFixed(2) : '';
+
+const calculateEntomologicalIndexes = ({
+  larvaeInspectedHouses,
+  larvaeInfestedHouses,
+  containersInspected,
+  containersInfested,
+}: Pick<EntomologicalReportEntry, 'larvaeInspectedHouses' | 'larvaeInfestedHouses' | 'containersInspected' | 'containersInfested'>) => ({
+  houseIndex: formatEntomologicalIndex(parseEntomologicalNumber(larvaeInfestedHouses), parseEntomologicalNumber(larvaeInspectedHouses)),
+  containerIndex: formatEntomologicalIndex(parseEntomologicalNumber(containersInfested), parseEntomologicalNumber(containersInspected)),
+  breteauIndex: formatEntomologicalIndex(parseEntomologicalNumber(containersInfested), parseEntomologicalNumber(larvaeInspectedHouses)),
+});
+
 function printHtmlDocument(html: string) {
   if (typeof window === 'undefined') return false;
   const printWindow = window.open('', '_blank');
@@ -173,9 +192,6 @@ export default function ReportsScreen() {
   const [entomologicalContainersInfested, setEntomologicalContainersInfested] = useState('');
   const [entomologicalContainersEmptied, setEntomologicalContainersEmptied] = useState('');
   const [entomologicalOvitrapHouses, setEntomologicalOvitrapHouses] = useState('');
-  const [entomologicalHouseIndex, setEntomologicalHouseIndex] = useState('');
-  const [entomologicalContainerIndex, setEntomologicalContainerIndex] = useState('');
-  const [entomologicalBreteauIndex, setEntomologicalBreteauIndex] = useState('');
 
   useEffect(() => {
     setPeriodMonth(String(reportPeriod.month));
@@ -187,6 +203,12 @@ export default function ReportsScreen() {
   }, [requestedReportKey]);
 
   const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date(reportPeriod.year, reportPeriod.month - 1, 1));
+  const entomologicalIndexes = calculateEntomologicalIndexes({
+    larvaeInspectedHouses: entomologicalLarvaeInspectedHouses,
+    larvaeInfestedHouses: entomologicalLarvaeInfestedHouses,
+    containersInspected: entomologicalContainersInspected,
+    containersInfested: entomologicalContainersInfested,
+  });
 
   const resetForm = () => {
     setPersonName('');
@@ -716,9 +738,6 @@ export default function ReportsScreen() {
     setEntomologicalContainersInfested('');
     setEntomologicalContainersEmptied('');
     setEntomologicalOvitrapHouses('');
-    setEntomologicalHouseIndex('');
-    setEntomologicalContainerIndex('');
-    setEntomologicalBreteauIndex('');
   };
 
   const selectEntomologicalVillage = (selectedVillageName: string) => {
@@ -745,9 +764,9 @@ export default function ReportsScreen() {
       containersInfested: entomologicalContainersInfested.trim(),
       containersEmptied: entomologicalContainersEmptied.trim(),
       ovitrapHouses: entomologicalOvitrapHouses.trim(),
-      houseIndex: entomologicalHouseIndex.trim(),
-      containerIndex: entomologicalContainerIndex.trim(),
-      breteauIndex: entomologicalBreteauIndex.trim(),
+      houseIndex: entomologicalIndexes.houseIndex,
+      containerIndex: entomologicalIndexes.containerIndex,
+      breteauIndex: entomologicalIndexes.breteauIndex,
     };
     if (editingEntomologicalId) {
       updateEntomologicalReport(editingEntomologicalId, entry);
@@ -781,9 +800,6 @@ export default function ReportsScreen() {
     setEntomologicalContainersInfested(entry.containersInfested);
     setEntomologicalContainersEmptied(entry.containersEmptied);
     setEntomologicalOvitrapHouses(entry.ovitrapHouses);
-    setEntomologicalHouseIndex(entry.houseIndex);
-    setEntomologicalContainerIndex(entry.containerIndex);
-    setEntomologicalBreteauIndex(entry.breteauIndex);
     setShowEntomologicalForm(true);
   };
 
@@ -1414,11 +1430,11 @@ export default function ReportsScreen() {
                  <View style={styles.column}><FormField label="रिकामी केलेली कंटेनर" value={entomologicalContainersEmptied} onChangeText={setEntomologicalContainersEmptied} placeholder="संख्या" keyboardType="number-pad" colors={colors} /></View>
                  <View style={styles.column}><FormField label="ऑव्हिट टाकलेली घरे" value={entomologicalOvitrapHouses} onChangeText={setEntomologicalOvitrapHouses} placeholder="संख्या" keyboardType="number-pad" colors={colors} /></View>
                </View>
-               <View style={styles.twoColumns}>
-                 <View style={styles.column}><FormField label="हाऊस इंडेक्स" value={entomologicalHouseIndex} onChangeText={setEntomologicalHouseIndex} placeholder="इंडेक्स" colors={colors} /></View>
-                 <View style={styles.column}><FormField label="कंटेनर इंडेक्स" value={entomologicalContainerIndex} onChangeText={setEntomologicalContainerIndex} placeholder="इंडेक्स" colors={colors} /></View>
-               </View>
-               <FormField label="ब्रेटो इंडेक्स" value={entomologicalBreteauIndex} onChangeText={setEntomologicalBreteauIndex} placeholder="इंडेक्स" colors={colors} />
+                <View style={styles.twoColumns}>
+                  <View style={styles.column}><CalculatedValueField label="हाऊस इंडेक्स (%)" value={entomologicalIndexes.houseIndex} colors={colors} /></View>
+                  <View style={styles.column}><CalculatedValueField label="कंटेनर इंडेक्स (%)" value={entomologicalIndexes.containerIndex} colors={colors} /></View>
+                </View>
+                <CalculatedValueField label="ब्रेटो इंडेक्स (%)" value={entomologicalIndexes.breteauIndex} colors={colors} />
                <Pressable testID="save-entomological-report" onPress={saveEntomologicalReport} style={({ pressed }) => [styles.saveButton, { backgroundColor: colors.primary, opacity: pressed ? 0.78 : 1 }]}><Feather name="check" size={17} color="#FFFFFF" /><Text style={styles.saveText}>{editingEntomologicalId ? 'बदल जतन करा' : 'नोंद जतन करा'}</Text></Pressable>
              </View> : null}
              <View style={styles.entriesHeader}>
@@ -1461,6 +1477,15 @@ function ProfileValueField({ label, value, colors }: { label: string; value: str
     <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>{label}</Text>
     <View style={[styles.fieldInput, styles.readOnlyField, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
       <Text style={[styles.readOnlyFieldText, { color: colors.foreground }]}>{value || 'प्रोफाइलमध्ये भरा'}</Text>
+    </View>
+  </View>;
+}
+
+function CalculatedValueField({ label, value, colors }: { label: string; value: string; colors: ReturnType<typeof useColors> }) {
+  return <View style={styles.field}>
+    <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>{label}</Text>
+    <View style={[styles.fieldInput, styles.readOnlyField, { backgroundColor: colors.secondary, borderColor: colors.border }]}>
+      <Text style={[styles.readOnlyFieldText, { color: colors.foreground }]}>{value || 'अपूर्ण माहिती'}</Text>
     </View>
   </View>;
 }
@@ -1635,6 +1660,7 @@ function NationalProgramsReviewEntryCard({ entry, index, colors, onEdit, onRemov
 }
 
 function EntomologicalEntryCard({ entry, index, colors, onEdit, onRemove }: { entry: EntomologicalReportEntry; index: number; colors: ReturnType<typeof useColors>; onEdit: () => void; onRemove: () => void }) {
+  const indexes = calculateEntomologicalIndexes(entry);
   return <View style={[styles.entryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
     <View style={[styles.entryNumber, { backgroundColor: colors.secondary }]}><Text style={[styles.entryNumberText, { color: colors.primary }]}>{index + 1}</Text></View>
     <View style={styles.entryCopy}>
@@ -1642,7 +1668,7 @@ function EntomologicalEntryCard({ entry, index, colors, onEdit, onRemove }: { en
       <Text style={[styles.entryMeta, { color: colors.mutedForeground }]}>लोकसंख्या: {entry.population || '—'} · एकूण घरे: {entry.householdCount || '—'}</Text>
       <Text style={[styles.entryMeta, { color: colors.mutedForeground }]}>अळी तपासलेली घरे: {entry.larvaeInspectedHouses || '—'} · अळी असलेली घरे: {entry.larvaeInfestedHouses || '—'}</Text>
       <Text style={[styles.entryMeta, { color: colors.mutedForeground }]}>कंटेनर तपासलेले: {entry.containersInspected || '—'} · दूषित: {entry.containersInfested || '—'} · रिकामी: {entry.containersEmptied || '—'}</Text>
-      <Text style={[styles.entryMeta, { color: colors.mutedForeground }]}>ऑव्हिट टाकलेली घरे: {entry.ovitrapHouses || '—'} · हाऊस: {entry.houseIndex || '—'} · कंटेनर: {entry.containerIndex || '—'} · ब्रेटो: {entry.breteauIndex || '—'}</Text>
+      <Text style={[styles.entryMeta, { color: colors.mutedForeground }]}>ऑव्हिट टाकलेली घरे: {entry.ovitrapHouses || '—'} · हाऊस: {indexes.houseIndex || '—'} · कंटेनर: {indexes.containerIndex || '—'} · ब्रेटो: {indexes.breteauIndex || '—'}</Text>
     </View>
     <View style={styles.entryActions}>
       <Pressable accessibilityRole="button" accessibilityLabel={`${entry.villageName} गावाचा किटकशास्त्रीय अहवाल बदला`} onPress={onEdit} hitSlop={10}><Feather name="edit-2" size={16} color={colors.primary} /></Pressable>
@@ -1763,7 +1789,9 @@ function buildWaterTclReportHtml({ profile, waterTclReports, monthLabel }: { pro
 }
 
 function buildEntomologicalReportHtml({ profile, entomologicalReports, monthLabel }: { profile: Profile; entomologicalReports: EntomologicalReportEntry[]; monthLabel: string }) {
-  const rows = entomologicalReports.map((entry, index) => `
+  const rows = entomologicalReports.map((entry, index) => {
+    const indexes = calculateEntomologicalIndexes(entry);
+    return `
     <tr>
       <td>${index + 1}</td>
       <td>${escapeHtml(entry.villageName)}</td>
@@ -1775,12 +1803,21 @@ function buildEntomologicalReportHtml({ profile, entomologicalReports, monthLabe
       <td>${escapeHtml(entry.containersInfested)}</td>
       <td>${escapeHtml(entry.containersEmptied)}</td>
       <td>${escapeHtml(entry.ovitrapHouses)}</td>
-      <td>${escapeHtml(entry.houseIndex)}</td>
-      <td>${escapeHtml(entry.containerIndex)}</td>
-      <td>${escapeHtml(entry.breteauIndex)}</td>
+      <td>${escapeHtml(indexes.houseIndex)}</td>
+      <td>${escapeHtml(indexes.containerIndex)}</td>
+      <td>${escapeHtml(indexes.breteauIndex)}</td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
   const sum = (field: keyof EntomologicalReportEntry) => sumNationalReviewValues(entomologicalReports.map((entry) => entry[field]));
+  const numericSum = (field: keyof EntomologicalReportEntry) => entomologicalReports.reduce((total, entry) => total + parseEntomologicalNumber(entry[field]), 0);
+  const totalLarvaeInspectedHouses = numericSum('larvaeInspectedHouses');
+  const totalLarvaeInfestedHouses = numericSum('larvaeInfestedHouses');
+  const totalContainersInspected = numericSum('containersInspected');
+  const totalContainersInfested = numericSum('containersInfested');
+  const totalHouseIndex = formatEntomologicalIndex(totalLarvaeInfestedHouses, totalLarvaeInspectedHouses);
+  const totalContainerIndex = formatEntomologicalIndex(totalContainersInfested, totalContainersInspected);
+  const totalBreteauIndex = formatEntomologicalIndex(totalContainersInfested, totalLarvaeInspectedHouses);
   return `<!doctype html>
     <html><head><meta charset="utf-8"><title>किटकशास्त्रीय अहवाल - ${escapeHtml(monthLabel)}</title>
     <style>
@@ -1816,7 +1853,7 @@ function buildEntomologicalReportHtml({ profile, entomologicalReports, monthLabe
         <th>दूषित असलेली<br>कंटेनर</th><th>रिकामी केलेली<br>कंटेनर</th><th>ऑव्हिट टाकलेली<br>घरे</th>
         <th>हाऊस<br>इंडेक्स</th><th>कंटेनर<br>इंडेक्स</th><th>ब्रेटो<br>इंडेक्स</th>
       </tr></thead><tbody>${rows || '<tr><td colspan="13">कोणतीही नोंद नाही</td></tr>'}</tbody>
-      <tfoot><tr class="total-row"><td colspan="2">Total</td><td>${sum('population')}</td><td>${sum('householdCount')}</td><td>${sum('larvaeInspectedHouses')}</td><td>${sum('larvaeInfestedHouses')}</td><td>${sum('containersInspected')}</td><td>${sum('containersInfested')}</td><td>${sum('containersEmptied')}</td><td>${sum('ovitrapHouses')}</td><td>${sum('houseIndex')}</td><td>${sum('containerIndex')}</td><td>${sum('breteauIndex')}</td></tr></tfoot></table>
+       <tfoot><tr class="total-row"><td colspan="2">Total</td><td>${sum('population')}</td><td>${sum('householdCount')}</td><td>${sum('larvaeInspectedHouses')}</td><td>${sum('larvaeInfestedHouses')}</td><td>${sum('containersInspected')}</td><td>${sum('containersInfested')}</td><td>${sum('containersEmptied')}</td><td>${sum('ovitrapHouses')}</td><td>${totalHouseIndex}</td><td>${totalContainerIndex}</td><td>${totalBreteauIndex}</td></tr></tfoot></table>
       <div class="signatures">
         <div>सविनय सादर<br>वैद्यकीय अधिकारी<br>प्राथमिक आरोग्य केंद्र: ${escapeHtml(profile.primaryHealthCenter || '—')}</div>
         <div class="right">नाव: ${escapeHtml(profile.name || '—')}<br>आरोग्य सेवक<br>उपकेंद्र: ${escapeHtml(profile.subCenter || '—')}</div>
